@@ -1,0 +1,55 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  check:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+      - name: Dotnet Restore
+        run: dotnet restore
+      - name: Dotnet Build
+        run: dotnet publish --configuration Release
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: metagen.dll
+          path: |
+            bin/Release/net6.0/publish/metagen.dll
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          #body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+      - name: Prepare release artifacts
+        run: |
+          ls ./bin/Release/net6.0/publish/
+          tar caf metagen.tar.gz -C ./bin/Release/net6.0/publish/ .
+          tar tvf metagen.tar.gz
+      - name: Upload release artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./metagen.tar.gz
+          asset_name: metagen.tar.gz
+          asset_content_type: application/gzip
