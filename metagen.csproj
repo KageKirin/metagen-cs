@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Authors>Chris 'KageKirin' Helmich</Authors>
+    <Version>0.1.0</Version>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
   </PropertyGroup>
