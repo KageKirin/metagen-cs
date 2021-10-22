@@ -1,0 +1,8 @@
+# .gitignore for metagen-cs
+
+## output folders
+obj/
+bin/
+
+## testing meta files
+*.meta
