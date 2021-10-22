@@ -29,12 +29,15 @@ jobs:
         run: dotnet restore
       - name: Dotnet Build
         run: dotnet publish -c Release -f net6.0 -r ${{ matrix.target }}
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          path: |
-            bin/Release/net6.0/${{ matrix.target }}/publish/metagen*
-            bin/Release/net6.0/${{ matrix.target }}/publish/metagen.*
+      - name: List build results
+        run: |
+          ls bin/Release/net6.0/${{ matrix.target }}/publish/
+      #- name: Upload build artifacts
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    path: |
+      #      bin/Release/net6.0/${{ matrix.target }}/publish/metagen*
+      #      bin/Release/net6.0/${{ matrix.target }}/publish/metagen.*
       - name: Create release
         uses: actions/create-release@v1
         id: create_release
