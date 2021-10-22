@@ -12,32 +12,52 @@ jobs:
   check:
     name: Build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        target:
-          - win10-x64
-          - osx.11.0-x64
-          - linux-x64
-          - linux-musl-x64
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
           include-prerelease: true
+
       - name: Dotnet Restore
         run: dotnet restore
-      - name: Dotnet Build
-        run: dotnet publish -c Release -f net6.0 -r ${{ matrix.target }}
-      - name: List build results
+
+      - name: Dotnet Build (win10-x64)
         run: |
-          ls bin/Release/net6.0/${{ matrix.target }}/publish/
-      #- name: Upload build artifacts
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    path: |
-      #      bin/Release/net6.0/${{ matrix.target }}/publish/metagen*
-      #      bin/Release/net6.0/${{ matrix.target }}/publish/metagen.*
+          dotnet publish -c Release -f net6.0 -r win10-x64
+          ls bin/Release/net6.0/win10-x64/publish/
+      - name: Upload build artifacts (win10-x64)
+        uses: actions/upload-artifact@v2
+        with:
+          path: bin/Release/net6.0/win10-x64/publish/metagen.exe
+
+      - name: Dotnet Build (osx.11.0-x64)
+        run: |
+          dotnet publish -c Release -f net6.0 -r osx.11.0-x64
+          ls bin/Release/net6.0/osx.11.0-x64/publish/
+      - name: Upload build artifacts (osx.11.0-x64)
+        uses: actions/upload-artifact@v2
+        with:
+          path: bin/Release/net6.0/osx.11.0-x64/publish/metagen
+
+      - name: Dotnet Build (linux-x64)
+        run: |
+          dotnet publish -c Release -f net6.0 -r linux-x64
+          ls bin/Release/net6.0/linux-x64/publish/
+      - name: Upload build artifacts (linux-x64)
+        uses: actions/upload-artifact@v2
+        with:
+          path: bin/Release/net6.0/linux-x64/publish/metagen
+
+      - name: Dotnet Build (linux-musl-x64)
+        run: |
+          dotnet publish -c Release -f net6.0 -r linux-musl-x64
+          ls bin/Release/net6.0/linux-musl-x64/publish/
+      - name: Upload build artifacts (linux-musl-x64)
+        uses: actions/upload-artifact@v2
+        with:
+          path: bin/Release/net6.0/linux-musl-x64/publish/metagen
+
       - name: Create release
         uses: actions/create-release@v1
         id: create_release
@@ -49,17 +69,63 @@ jobs:
           #body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
-      - name: Prepare release artifacts
+
+      - name: Prepare release artifacts (win10-x64)
         run: |
-          ls ./bin/Release/net6.0/publish/
-          tar caf metagen-${{ matrix.target }}.tar.gz -C ./bin/Release/net6.0/${{ matrix.target }}/publish/ .
-          tar tvf metagen-${{ matrix.target }}.tar.gz
-      - name: Upload release artifacts
+          ls ./bin/Release/net6.0/win10-x64/publish/
+          tar caf metagen-win10-x64.tar.gz -C ./bin/Release/net6.0/win10-x64/publish/ .
+          tar tvf metagen-win10-x64.tar.gz
+      - name: Upload release artifacts (win10-x64)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./metagen-${{ matrix.target }}.tar.gz
-          asset_name: metagen-${{ matrix.target }}.tar.gz
+          asset_path: ./metagen-win10-x64.tar.gz
+          asset_name: metagen-win10-x64.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Prepare release artifacts (osx.11.0-x64)
+        run: |
+          ls ./bin/Release/net6.0/osx.11.0-x64/publish/
+          tar caf metagen-osx.11.0-x64.tar.gz -C ./bin/Release/net6.0/osx.11.0-x64/publish/ .
+          tar tvf metagen-osx.11.0-x64.tar.gz
+      - name: Upload release artifacts (osx.11.0-x64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./metagen-osx.11.0-x64.tar.gz
+          asset_name: metagen-osx.11.0-x64.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Prepare release artifacts (linux-x64)
+        run: |
+          ls ./bin/Release/net6.0/linux-x64/publish/
+          tar caf metagen-linux-x64.tar.gz -C ./bin/Release/net6.0/linux-x64/publish/ .
+          tar tvf metagen-linux-x64.tar.gz
+      - name: Upload release artifacts (linux-x64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./metagen-linux-x64.tar.gz
+          asset_name: metagen-linux-x64.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Prepare release artifacts (linux-musl-x64)
+        run: |
+          ls ./bin/Release/net6.0/linux-musl-x64/publish/
+          tar caf metagen-linux-musl-x64.tar.gz -C ./bin/Release/net6.0/linux-musl-x64/publish/ .
+          tar tvf metagen-linux-musl-x64.tar.gz
+      - name: Upload release artifacts (linux-musl-x64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./metagen-linux-musl-x64.tar.gz
+          asset_name: metagen-linux-musl-x64.tar.gz
           asset_content_type: application/gzip
