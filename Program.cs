@@ -21,7 +21,7 @@ namespace metagen
     internal class ProgramOptions
     {
         [Option('s', "seed",
-            Default = "ffd",
+            Default = "",
             HelpText = "seed string, e.g. package name",
             Required = false)]
         public string Seed { get; set; }
@@ -45,6 +45,12 @@ namespace metagen
 
         static void RunOptions(ProgramOptions opts)
         {
+            // handle empty opts.Seed
+            if (opts.Seed.Length == 0)
+            {
+                opts.Seed = Directory.GetCurrentDirectory();
+            }
+
             UInt64 seed = xxHash64.ComputeHash(Encoding.UTF8.GetBytes(opts.Seed));
             Console.WriteLine($"seed: {opts.Seed} -> {seed:x8}");
 
