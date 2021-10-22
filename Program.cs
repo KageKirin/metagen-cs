@@ -74,7 +74,12 @@ namespace metagen
         }
         static void HandleParseError(IEnumerable<Error> errs)
         {
-            //handle errors
+            Console.Error.WriteLine("Parser errors occurred");
+            foreach (var e in errs)
+            {
+                Console.Error.WriteLine($"{e}");
+            }
+            throw new System.FormatException("Invalid command line options");
         }
 
         static void generateMetaFile(string filename, Guid guid)
