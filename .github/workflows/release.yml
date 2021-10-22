@@ -24,7 +24,7 @@ jobs:
 
       - name: Dotnet Build (win10-x64)
         run: |
-          dotnet publish -c Release -f net6.0 -r win10-x64
+          dotnet publish -c Release -f net6.0 -r win10-x64 --self-contained
           ls bin/Release/net6.0/win10-x64/publish/
       - name: Upload build artifacts (win10-x64)
         uses: actions/upload-artifact@v2
@@ -33,7 +33,7 @@ jobs:
 
       - name: Dotnet Build (osx.11.0-x64)
         run: |
-          dotnet publish -c Release -f net6.0 -r osx.11.0-x64
+          dotnet publish -c Release -f net6.0 -r osx.11.0-x64 --self-contained
           ls bin/Release/net6.0/osx.11.0-x64/publish/
       - name: Upload build artifacts (osx.11.0-x64)
         uses: actions/upload-artifact@v2
@@ -42,7 +42,7 @@ jobs:
 
       - name: Dotnet Build (linux-x64)
         run: |
-          dotnet publish -c Release -f net6.0 -r linux-x64
+          dotnet publish -c Release -f net6.0 -r linux-x64 --self-contained
           ls bin/Release/net6.0/linux-x64/publish/
       - name: Upload build artifacts (linux-x64)
         uses: actions/upload-artifact@v2
@@ -51,7 +51,7 @@ jobs:
 
       - name: Dotnet Build (linux-musl-x64)
         run: |
-          dotnet publish -c Release -f net6.0 -r linux-musl-x64
+          dotnet publish -c Release -f net6.0 -r linux-musl-x64 --self-contained
           ls bin/Release/net6.0/linux-musl-x64/publish/
       - name: Upload build artifacts (linux-musl-x64)
         uses: actions/upload-artifact@v2
