@@ -12,6 +12,13 @@ jobs:
   check:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - win10-x64
+          - osx.11.0-x64
+          - linux-x64
+          - linux-musl-x64
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
@@ -21,13 +28,13 @@ jobs:
       - name: Dotnet Restore
         run: dotnet restore
       - name: Dotnet Build
-        run: dotnet publish --configuration Release
+        run: dotnet publish -c Release -f net6.0 -r ${{ matrix.target }}
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: metagen.dll
           path: |
-            bin/Release/net6.0/publish/metagen.dll
+            bin/Release/net6.0/${{ matrix.target }}/publish/metagen*
+            bin/Release/net6.0/${{ matrix.target }}/publish/metagen.*
       - name: Create release
         uses: actions/create-release@v1
         id: create_release
@@ -42,14 +49,14 @@ jobs:
       - name: Prepare release artifacts
         run: |
           ls ./bin/Release/net6.0/publish/
-          tar caf metagen.tar.gz -C ./bin/Release/net6.0/publish/ .
-          tar tvf metagen.tar.gz
+          tar caf metagen-${{ matrix.target }}.tar.gz -C ./bin/Release/net6.0/${{ matrix.target }}/publish/ .
+          tar tvf metagen-${{ matrix.target }}.tar.gz
       - name: Upload release artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./metagen.tar.gz
-          asset_name: metagen.tar.gz
+          asset_path: ./metagen-${{ matrix.target }}.tar.gz
+          asset_name: metagen-${{ matrix.target }}.tar.gz
           asset_content_type: application/gzip
