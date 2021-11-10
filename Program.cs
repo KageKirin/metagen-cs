@@ -26,6 +26,11 @@ namespace metagen
             Required = false)]
         public string Seed { get; set; }
 
+        [Option('o', "overwrite",
+            HelpText = "overwrite existing .meta files",
+            Required = false)]
+        public bool Overwrite { get; set; }
+
         [Value(0,
             Min = 1,
             MetaName = "input files",
@@ -68,7 +73,7 @@ namespace metagen
 
                     Console.WriteLine($"{f} -> {guid}");
 
-                    generateMetaFile(f, guid);
+                    generateMetaFile(f, guid, opts.Overwrite);
                 }
             }
         }
@@ -82,9 +87,16 @@ namespace metagen
             throw new System.FormatException("Invalid command line options");
         }
 
-        static void generateMetaFile(string filename, Guid guid)
+        static void generateMetaFile(string filename, Guid guid, bool overwrite)
         {
             var metaPath = filename + @".meta";
+
+            if (File.Exists(metaPath) && !overwrite)
+            {
+                Console.WriteLine($"Skipping existing {metaPath}.");
+                return;
+            }
+
             var metaContents = "fileFormatVersion: 2\n"
             + $"guid: {guid}\n"
             + @"MonoImporter:
