@@ -3,6 +3,7 @@
 ## output folders
 obj/
 bin/
+nupkg/
 
 ## testing meta files
 *.meta
