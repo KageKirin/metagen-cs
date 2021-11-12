@@ -15,4 +15,13 @@
     <PackageReference Include="Standart.Hash.xxHash" Version="3.1.0" />
   </ItemGroup>
 
+  <!-- Dotnet Tool Specific settings -->
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>metagen</PackageId>
+    <ToolCommandName>metagen</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
 </Project>
