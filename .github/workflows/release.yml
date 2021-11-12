@@ -133,3 +133,9 @@ jobs:
           asset_path: ./metagen-linux-musl-x64.tar.gz
           asset_name: metagen-linux-musl-x64.tar.gz
           asset_content_type: application/gzip
+
+      - name: .NET Pack
+        run: dotnet pack -c Release
+
+      - name: .NET Publish NuGet
+        run: dotnet nuget push ./metagen-cs/out/*.nupkg --skip-duplicate --no-symbols true
