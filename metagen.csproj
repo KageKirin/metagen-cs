@@ -6,7 +6,7 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <PublishReadyToRun>false</PublishReadyToRun>
-    <PublishSingleFile>true</PublishSingleFile>
+    <PublishSingleFile>false</PublishSingleFile>
     <RuntimeIdentifiers>win10-x64;osx.11.0-x64;linux-x64;linux-musl-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
