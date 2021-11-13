@@ -14,15 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-dotnet@v1
+      - name: Setup .NET Core @ Latest
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
           include-prerelease: true
+          source-url: https://nuget.pkg.github.com/KageKirin/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ github.TOKEN }}
+      - name: Install deploy tools
+        run: dotnet tool install -g gpr
 
-      - name: Dotnet Restore
+      - name: .NET Restore
         run: dotnet restore
 
-      - name: Dotnet Build (win10-x64)
+      - name: .NET Build (win10-x64)
         run: |
           dotnet publish -c Release -f net6.0 -r win10-x64 --self-contained
           ls bin/Release/net6.0/win10-x64/publish/
@@ -31,7 +37,7 @@ jobs:
         with:
           path: bin/Release/net6.0/win10-x64/publish/metagen.exe
 
-      - name: Dotnet Build (osx.11.0-x64)
+      - name: .NET Build (osx.11.0-x64)
         run: |
           dotnet publish -c Release -f net6.0 -r osx.11.0-x64 --self-contained
           ls bin/Release/net6.0/osx.11.0-x64/publish/
@@ -40,7 +46,7 @@ jobs:
         with:
           path: bin/Release/net6.0/osx.11.0-x64/publish/metagen
 
-      - name: Dotnet Build (linux-x64)
+      - name: .NET Build (linux-x64)
         run: |
           dotnet publish -c Release -f net6.0 -r linux-x64 --self-contained
           ls bin/Release/net6.0/linux-x64/publish/
@@ -49,7 +55,7 @@ jobs:
         with:
           path: bin/Release/net6.0/linux-x64/publish/metagen
 
-      - name: Dotnet Build (linux-musl-x64)
+      - name: .NET Build (linux-musl-x64)
         run: |
           dotnet publish -c Release -f net6.0 -r linux-musl-x64 --self-contained
           ls bin/Release/net6.0/linux-musl-x64/publish/
@@ -129,3 +135,13 @@ jobs:
           asset_path: ./metagen-linux-musl-x64.tar.gz
           asset_name: metagen-linux-musl-x64.tar.gz
           asset_content_type: application/gzip
+
+      - name: .NET Pack
+        run: |
+          dotnet build -c Release
+          dotnet pack -c Release
+
+      - name: .NET Publish NuGet
+        run: gpr push nupkg/metagen.0.1.6.nupkg -k ${{ github.TOKEN }}
+
+        #run: dotnet nuget push ./metagen-cs/out/*.nupkg --skip-duplicate --no-symbols true
