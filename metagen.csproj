@@ -8,6 +8,7 @@
     <PublishReadyToRun>false</PublishReadyToRun>
     <PublishSingleFile>false</PublishSingleFile>
     <RuntimeIdentifiers>win10-x64;osx.11.0-x64;linux-x64;linux-musl-x64</RuntimeIdentifiers>
+    <RepositoryUrl>https://github.com/KageKirin/metagen-cs</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
