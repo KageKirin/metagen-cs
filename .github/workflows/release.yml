@@ -22,6 +22,8 @@ jobs:
           source-url: https://nuget.pkg.github.com/KageKirin/index.json
         env:
           NUGET_AUTH_TOKEN: ${{ github.TOKEN }}
+      - name: Install deploy tools
+        run: dotnet tool install -g gpr
 
       - name: .NET Restore
         run: dotnet restore
@@ -135,7 +137,11 @@ jobs:
           asset_content_type: application/gzip
 
       - name: .NET Pack
-        run: dotnet pack -c Release
+        run: |
+          dotnet build -c Release
+          dotnet pack -c Release
 
       - name: .NET Publish NuGet
-        run: dotnet nuget push ./metagen-cs/out/*.nupkg --skip-duplicate --no-symbols true
+        run: gpr push nupkg/metagen.0.1.6.nupkg -k ${{ github.TOKEN }}
+
+        #run: dotnet nuget push ./metagen-cs/out/*.nupkg --skip-duplicate --no-symbols true
