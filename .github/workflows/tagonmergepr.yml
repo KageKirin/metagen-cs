@@ -1,0 +1,50 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Tag on Merge Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  bump:
+    name: Bump tag
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_CHAIN_TOKEN }}
+          persist-credentials: false
+
+      - name: Configure git
+        run: |
+          git config --local user.email "kagekirin+ci@gmail.com"
+          git config --local user.name "CI Bot"
+
+      - name: Get version
+        uses: KageKirin/get-csproj-version@v0
+        with:
+          file: metagen.csproj
+
+      - name: Bump version
+        id: bump
+        uses: KageKirin/bump-csproj-version@v0
+        with:
+          file: metagen.csproj
+          patch: true
+
+      - name: Commit new version ${{ steps.bump.outputs.version }}
+        run: |
+          git add dotnet-version.csproj
+          git commit -m "CI: Bump version to ${{ steps.bump.outputs.version }}"
+
+      - name: Set new git tag
+        run: |
+          git tag -m "CI" ${{ steps.bump.outputs.version }}
+
+      - name: Push tag
+        run: git push --follow-tags https://${{ secrets.GH_CHAIN_TOKEN }}@github.com/kagekirin/metagen-cs.git
