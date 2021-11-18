@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Authors>Chris 'KageKirin' Helmich</Authors>
-    <Version>0.1.6</Version>
+    <Version>0.1.7</Version>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <PublishReadyToRun>false</PublishReadyToRun>
@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="Standart.Hash.xxHash" Version="3.1.0" />
+    <PackageReference Include="CommandLineParser" Version="2.8.0"/>
+    <PackageReference Include="Standart.Hash.xxHash" Version="3.1.0"/>
   </ItemGroup>
 
   <!-- Dotnet Tool Specific settings -->
