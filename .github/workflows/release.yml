@@ -142,6 +142,6 @@ jobs:
           dotnet pack -c Release
 
       - name: .NET Publish NuGet
-        run: gpr push nupkg/metagen.0.1.6.nupkg -k ${{ github.TOKEN }}
+        run: gpr push nupkg/metagen.${{ github.ref_name }}.nupkg -k ${{ github.TOKEN }}
 
         #run: dotnet nuget push ./metagen-cs/out/*.nupkg --skip-duplicate --no-symbols true
