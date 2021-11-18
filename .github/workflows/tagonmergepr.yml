@@ -44,4 +44,4 @@ jobs:
           git tag -m "CI" ${{ steps.bump.outputs.version }}
 
       - name: Push tag
-        run: git push --follow-tags origin
+        run: git push --follow-tags https://${{ secrets.GH_CHAIN_TOKEN }}@github.com/kagekirin/metagen-cs.git
